@@ -1,0 +1,88 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+    <div class="stat-card blue">
+        <div class="label">Total Orders</div>
+        <div class="value">{{ total_orders }}</div>
+        <div class="sub">All time</div>
+    </div>
+    <div class="stat-card orange">
+        <div class="label">Pending</div>
+        <div class="value">{{ pending }}</div>
+        <div class="sub">Needs action</div>
+    </div>
+    <div class="stat-card green">
+        <div class="label">Delivered</div>
+        <div class="value">{{ delivered }}</div>
+        <div class="sub">Completed</div>
+    </div>
+    <div class="stat-card green">
+        <div class="label">Revenue</div>
+        <div class="value">₹{{ "%.0f"|format(total_revenue) }}</div>
+        <div class="sub">Total earned</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Users</div>
+        <div class="value">{{ total_users }}</div>
+        <div class="sub">Registered</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Medicines</div>
+        <div class="value">{{ total_medicines }}</div>
+        <div class="sub">In catalog</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Contacts</div>
+        <div class="value">{{ contacts }}</div>
+        <div class="sub">Messages</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Recent Orders</h3>
+        <a href="{{ url_for('admin.orders') }}" class="btn btn-outline btn-sm">View all</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#ID</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Payment</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for o in recent_orders %}
+            <tr>
+                <td><strong>#{{ o.id }}</strong></td>
+                <td>{{ o.name or 'N/A' }}</td>
+                <td>{{ o.phone or '—' }}</td>
+                <td>{{ o.city or '—' }}</td>
+                <td>{{ o.payment or '—' }}</td>
+                <td>₹{{ "%.0f"|format(o.total_price or 0) }}</td>
+                <td>
+                    <span class="badge
+                        {% if o.status == 'Pending' %}badge-pending
+                        {% elif o.status == 'Confirmed' %}badge-confirmed
+                        {% elif o.status == 'Out for Delivery' %}badge-out
+                        {% elif o.status == 'Delivered' %}badge-delivered
+                        {% elif o.status == 'Cancelled' %}badge-cancelled
+                        {% endif %}">{{ o.status }}</span>
+                </td>
+                <td><a href="{{ url_for('admin.order_detail', order_id=o.id) }}" class="btn btn-outline btn-sm">View</a></td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8" class="empty">No orders yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

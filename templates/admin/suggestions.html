@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+{% block title %}Suggestions{% endblock %}
+{% block page_title %}Customer Suggestions{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Suggestions from Orders</h3>
+        <span style="font-size:13px;color:#888;">{{ orders|length }} suggestion(s)</span>
+    </div>
+
+    {% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>#Order</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Suggestion</th>
+                <th>Total</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for o in orders %}
+            <tr>
+                <td><strong>#{{ o.id }}</strong></td>
+                <td>{{ o.name or 'N/A' }}</td>
+                <td>{{ o.phone or '—' }}</td>
+                <td>{{ o.city or '—' }}</td>
+                <td style="max-width:300px;font-size:13px;color:#444;line-height:1.5;">
+                    {{ o.suggestion }}
+                </td>
+                <td>₹{{ "%.0f"|format(o.total_price or 0) }}</td>
+                <td>
+                    <a href="{{ url_for('admin.order_detail', order_id=o.id) }}" class="btn btn-outline btn-sm">View Order</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        <div class="empty-icon">💬</div>
+        <p>No suggestions yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

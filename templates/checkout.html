@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Checkout</title>
+
+<style>
+body {
+    font-family: Segoe UI;
+    background: #f5f7fb;
+    margin: 0;
+}
+
+.container {
+    width: 90%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.total {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    background: linear-gradient(135deg,#1e63f3,#4facfe);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    transform: scale(1.03);
+}
+
+.payment-option {
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LEFT SIDE - FORM -->
+<div class="card">
+<h2>Delivery Details</h2>
+
+<form method="POST" action="/place_order">
+
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="text" name="phone" placeholder="Phone Number" required>
+
+    <textarea name="address" placeholder="Full Address" required></textarea>
+
+    <input type="text" name="city" placeholder="City" required>
+    <input type="text" name="pincode" placeholder="Pincode" required>
+
+    <!-- ⭐ USP FEATURE -->
+    <textarea name="suggestion" placeholder="Any instruction? (urgent delivery, substitute medicine, etc.)"></textarea>
+
+    <h3>Payment Method</h3>
+
+    <div class="payment-option">
+        <input type="radio" name="payment" value="COD" checked> Cash on Delivery
+    </div>
+
+    <div class="payment-option">
+        <input type="radio" name="payment" value="ONLINE"> Online Payment
+    </div>
+
+    <button class="btn">Place Order 🚀</button>
+
+</form>
+</div>
+
+<!-- RIGHT SIDE - ORDER SUMMARY -->
+<div class="card">
+<h2>Your Order</h2>
+
+{% if cart_items %}
+    {% for item in cart_items %}
+        <div class="item">
+            <span>{{ item.name }} x {{ item.quantity }}</span>
+            <span>₹{{ item.price * item.quantity }}</span>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No items in cart</p>
+{% endif %}
+
+<hr>
+
+<div class="total">
+Total: ₹{{ total }}
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

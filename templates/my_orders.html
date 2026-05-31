@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders — MediDelivery</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .navbar { background: #1a1a2e; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar a { color: #fff; text-decoration: none; font-size: 14px; margin-left: 16px; }
+        .navbar .logo { color: #4fc3f7; font-size: 20px; font-weight: 700; margin-left: 0; }
+        .container { max-width: 860px; margin: 36px auto; padding: 0 20px; }
+        h1 { font-size: 22px; font-weight: 600; color: #1a1a2e; margin-bottom: 20px; }
+        .empty { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; border: 1px solid #e8eaf0; }
+        .empty .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty p { color: #888; font-size: 14px; margin-bottom: 20px; }
+        .empty a { display: inline-block; padding: 10px 24px; background: #1565c0; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px; }
+        .order-card { background: #fff; border-radius: 12px; border: 1px solid #e8eaf0; margin-bottom: 18px; overflow: hidden; }
+        .order-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .order-id { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+        .order-meta { font-size: 13px; color: #888; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-pending { background: #fff3e0; color: #e65100; }
+        .badge-confirmed { background: #e3f2fd; color: #1565c0; }
+        .badge-out { background: #e8f5e9; color: #2e7d32; }
+        .badge-delivered { background: #e8f5e9; color: #1b5e20; }
+        .badge-cancelled { background: #ffebee; color: #c62828; }
+        .order-body { padding: 16px 20px; }
+        .items-list { margin-bottom: 12px; }
+        .item-row { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px solid #f7f7f7; }
+        .item-row:last-child { border-bottom: none; }
+        .item-name { color: #333; }
+        .item-qty { color: #888; font-size: 13px; }
+        .item-price { font-weight: 500; color: #1a1a2e; }
+        .order-footer { padding: 12px 20px; background: #fafafa; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .total { font-weight: 600; font-size: 16px; color: #2e7d32; }
+        .delivery-info { font-size: 13px; color: #666; }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a href="/" class="logo">💊 MediDelivery</a>
+    <div>
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>📦 My Orders</h1>
+
+    {% if not orders %}
+    <div class="empty">
+        <div class="icon">🛒</div>
+        <p>You haven't placed any orders yet.</p>
+        <a href="/">Shop Medicines</a>
+    </div>
+    {% else %}
+        {% for o in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <div class="order-id">Order #{{ o.id }}</div>
+                    <div class="order-meta">Payment: {{ o.payment or 'COD' }} &nbsp;|&nbsp; {{ o.city or '' }}</div>
+                </div>
+                <span class="badge
+                    {% if o.status == 'Pending' %}badge-pending
+                    {% elif o.status == 'Confirmed' %}badge-confirmed
+                    {% elif o.status == 'Out for Delivery' %}badge-out
+                    {% elif o.status == 'Delivered' %}badge-delivered
+                    {% elif o.status == 'Cancelled' %}badge-cancelled
+                    {% endif %}">{{ o.status }}</span>
+            </div>
+
+            <div class="order-body">
+                <div class="items-list">
+                    {% for item in o.items %}
+                    <div class="item-row">
+                        <span class="item-name">💊 {{ item.name }}</span>
+                        <span class="item-qty">× {{ item.quantity }}</span>
+                        <span class="item-price">₹{{ "%.0f"|format(item.price * item.quantity) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if o.suggestion %}
+                <div style="font-size:13px;color:#888;margin-top:8px;">💬 Note: {{ o.suggestion }}</div>
+                {% endif %}
+            </div>
+
+            <div class="order-footer">
+                <div class="delivery-info">📍 {{ o.address }}, {{ o.city }} - {{ o.pincode }}</div>
+                <div class="total">Total: ₹{{ "%.0f"|format(o.total_price) }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+</body>
+</html>

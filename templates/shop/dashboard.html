@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop Dashboard — {{ shop.shop_name }}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 230px; background: #1a1a2e; min-height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; }
+        .sidebar-logo { padding: 22px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-logo h2 { color: #fff; font-size: 16px; font-weight: 600; }
+        .sidebar-logo p { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 3px; }
+        .shop-badge { background: rgba(79,195,247,0.12); border-radius: 8px; padding: 10px 12px; margin: 12px 14px; }
+        .shop-badge .sname { color: #4fc3f7; font-size: 13px; font-weight: 600; }
+        .shop-badge .sstatus { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 2px; }
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 18px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 13px; transition: all 0.15s; border-left: 3px solid transparent; }
+        .nav-link:hover, .nav-link.active { background: rgba(79,195,247,0.1); color: #4fc3f7; border-left-color: #4fc3f7; }
+        .sidebar-footer { margin-top: auto; padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-footer a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 13px; display: block; margin-bottom: 8px; }
+        .sidebar-footer a:hover { color: #fff; }
+
+        /* MAIN */
+        .main { margin-left: 230px; flex: 1; }
+        .topbar { background: #fff; padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8eaf0; position: sticky; top: 0; z-index: 50; }
+        .topbar-title { font-size: 16px; font-weight: 600; }
+        .notif-btn { position: relative; background: transparent; border: 1px solid #dde3f0; border-radius: 8px; padding: 7px 14px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: all 0.15s; color: #1a1a2e; }
+        .notif-btn:hover { background: #e3f2fd; border-color: #1565c0; color: #1565c0; }
+        .notif-count { background: #e53935; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .notif-count.hidden { display: none; }
+        .content { padding: 24px; }
+
+        /* STATS */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        .stat-card { background: #fff; border-radius: 12px; padding: 18px; border: 1px solid #e8eaf0; }
+        .stat-card .label { font-size: 11px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+        .stat-card .value { font-size: 26px; font-weight: 700; }
+        .stat-card.blue .value { color: #1565c0; }
+        .stat-card.orange .value { color: #e65100; }
+        .stat-card.green .value { color: #2e7d32; }
+        .stat-card.red .value { color: #c62828; }
+
+        /* TABLE */
+        .card { background: #fff; border-radius: 12px; border: 1px solid #e8eaf0; overflow: hidden; margin-bottom: 20px; }
+        .card-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+        .card-header h3 { font-size: 15px; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.04em; background: #fafafa; border-bottom: 1px solid #f0f0f0; }
+        td { padding: 12px 14px; border-bottom: 1px solid #f7f7f7; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafcff; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-pending { background: #fff3e0; color: #e65100; }
+        .badge-accepted { background: #e8f5e9; color: #2e7d32; }
+        .badge-rejected { background: #ffebee; color: #c62828; }
+        .btn { display: inline-block; padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: all 0.15s; }
+        .btn-accept { background: #e8f5e9; color: #2e7d32; }
+        .btn-accept:hover { background: #c8e6c9; }
+        .btn-reject { background: #ffebee; color: #c62828; }
+        .btn-reject:hover { background: #ffcdd2; }
+        .empty { text-align: center; padding: 40px; color: #aaa; }
+        .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+        /* NOTIFICATION POPUP */
+        .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: flex-start; justify-content: flex-end; padding: 70px 20px 0; }
+        .popup-overlay.open { display: flex; }
+        .popup-box { background: #fff; border-radius: 16px; width: 380px; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,0.18); }
+        .popup-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; }
+        .popup-header h3 { font-size: 15px; font-weight: 600; }
+        .popup-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; line-height: 1; }
+        .popup-close:hover { color: #333; }
+        .notif-item { padding: 14px 18px; border-bottom: 1px solid #f5f5f5; }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item .order-id { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 4px; }
+        .notif-item .customer { font-size: 12px; color: #555; margin-bottom: 3px; }
+        .notif-item .items-list { font-size: 12px; color: #888; margin-bottom: 8px; }
+        .notif-item .total { font-size: 13px; font-weight: 600; color: #2e7d32; margin-bottom: 10px; }
+        .notif-actions { display: flex; gap: 8px; }
+        .notif-actions form { flex: 1; }
+        .notif-actions button { width: 100%; padding: 8px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .btn-accept-big { background: #e8f5e9; color: #2e7d32; }
+        .btn-accept-big:hover { background: #c8e6c9; }
+        .btn-reject-big { background: #ffebee; color: #c62828; }
+        .btn-reject-big:hover { background: #ffcdd2; }
+        .no-notif { text-align: center; padding: 32px; color: #aaa; font-size: 14px; }
+
+        /* PULSE ANIMATION */
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+        .pulse { animation: pulse 1.2s infinite; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <h2>💊 MediDelivery</h2>
+        <p>Shop Partner Panel</p>
+    </div>
+    <div class="shop-badge">
+        <div class="sname">🏪 {{ shop.shop_name }}</div>
+        <div class="sstatus">✅ Approved & Active</div>
+    </div>
+    <a href="{{ url_for('shop.dashboard') }}" class="nav-link active">📦 Orders</a>
+    <a href="{{ url_for('shop.profile') }}" class="nav-link">🏪 Shop Profile</a>
+    <div class="sidebar-footer">
+        <a href="/">🏠 Main Site</a>
+        <a href="{{ url_for('shop.shop_logout') }}">🚪 Logout</a>
+    </div>
+</aside>
+
+<div class="main">
+    <div class="topbar">
+        <div class="topbar-title">Shop Dashboard</div>
+        <button class="notif-btn" onclick="openPopup()">
+            🔔 New Orders
+            <span class="notif-count {% if pending == 0 %}hidden{% endif %} {% if pending > 0 %}pulse{% endif %}" id="notifCount">{{ pending }}</span>
+        </button>
+    </div>
+
+    <div class="content">
+        <!-- STATS -->
+        <div class="stat-grid">
+            <div class="stat-card blue">
+                <div class="label">Total Orders</div>
+                <div class="value">{{ total }}</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="label">Pending</div>
+                <div class="value">{{ pending }}</div>
+            </div>
+            <div class="stat-card green">
+                <div class="label">Accepted</div>
+                <div class="value">{{ accepted }}</div>
+            </div>
+            <div class="stat-card red">
+                <div class="label">Rejected</div>
+                <div class="value">{{ rejected }}</div>
+            </div>
+            <div class="stat-card green">
+                <div class="label">Revenue</div>
+                <div class="value">₹{{ "%.0f"|format(revenue) }}</div>
+            </div>
+        </div>
+
+        <!-- ORDERS TABLE -->
+        <div class="card">
+            <div class="card-header">
+                <h3>All Orders</h3>
+                <span style="font-size:12px;color:#888;">{{ orders|length }} total</span>
+            </div>
+            {% if orders %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for o in orders %}
+                    <tr>
+                        <td><strong>#{{ o.id }}</strong></td>
+                        <td>
+                            <div style="font-weight:500;">{{ o.name or 'N/A' }}</div>
+                            <div style="font-size:11px;color:#888;">{{ o.city }}</div>
+                        </td>
+                        <td>{{ o.phone or '—' }}</td>
+                        <td style="font-size:12px;">
+                            {% for item in o.items %}
+                            <div>{{ item.name }} × {{ item.quantity }}</div>
+                            {% endfor %}
+                        </td>
+                        <td><strong>₹{{ "%.0f"|format(o.total_price) }}</strong></td>
+                        <td>{{ o.payment or 'COD' }}</td>
+                        <td>
+                            <span class="badge
+                                {% if o.shop_status == 'Pending' %}badge-pending
+                                {% elif o.shop_status == 'Accepted' %}badge-accepted
+                                {% elif o.shop_status == 'Rejected' %}badge-rejected
+                                {% endif %}">{{ o.shop_status }}</span>
+                        </td>
+                        <td>
+                            {% if o.shop_status == 'Pending' %}
+                            <div style="display:flex;gap:6px;">
+                                <form method="POST" action="{{ url_for('shop.order_action', order_id=o.id) }}">
+                                    <input type="hidden" name="action" value="accept">
+                                    <button type="submit" class="btn btn-accept">✅ Accept</button>
+                                </form>
+                                <form method="POST" action="{{ url_for('shop.order_action', order_id=o.id) }}">
+                                    <input type="hidden" name="action" value="reject">
+                                    <button type="submit" class="btn btn-reject">❌ Reject</button>
+                                </form>
+                            </div>
+                            {% else %}
+                                <span style="font-size:12px;color:#aaa;">Done</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">
+                <div class="empty-icon">📭</div>
+                No orders yet. Orders placed by customers will appear here.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICATION POPUP -->
+<div class="popup-overlay" id="popupOverlay" onclick="closeOnOverlay(event)">
+    <div class="popup-box">
+        <div class="popup-header">
+            <h3>🔔 Pending Orders</h3>
+            <button class="popup-close" onclick="closePopup()">×</button>
+        </div>
+        <div id="popupContent">
+            <div class="no-notif">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPopup() {
+    document.getElementById('popupOverlay').classList.add('open');
+    loadNotifications();
+}
+
+function closePopup() {
+    document.getElementById('popupOverlay').classList.remove('open');
+}
+
+function closeOnOverlay(e) {
+    if (e.target === document.getElementById('popupOverlay')) closePopup();
+}
+
+function loadNotifications() {
+    fetch('{{ url_for("shop.new_orders_count") }}')
+        .then(r => r.json())
+        .then(data => {
+            const count = data.count;
+            const badge = document.getElementById('notifCount');
+            badge.textContent = count;
+            badge.classList.toggle('hidden', count === 0);
+            badge.classList.toggle('pulse', count > 0);
+
+            const content = document.getElementById('popupContent');
+
+            if (data.orders.length === 0) {
+                content.innerHTML = '<div class="no-notif">🎉 No pending orders right now!</div>';
+                return;
+            }
+
+            content.innerHTML = data.orders.map(o => `
+                <div class="notif-item">
+                    <div class="order-id">📦 Order #${o.id} &nbsp;<span style="font-size:11px;color:#aaa;">${o.created_at}</span></div>
+                    <div class="customer">👤 ${o.name || 'Customer'} &nbsp;|&nbsp; 📞 ${o.phone || '—'}</div>
+                    <div class="items-list">💊 ${o.items.map(i => i.name + ' ×' + i.quantity).join(', ')}</div>
+                    <div class="total">Total: ₹${Math.round(o.total_price)}</div>
+                    <div class="notif-actions">
+                        <form method="POST" action="/shop/order/${o.id}/action">
+                            <input type="hidden" name="action" value="accept">
+                            <button type="submit" class="btn-accept-big">✅ Accept</button>
+                        </form>
+                        <form method="POST" action="/shop/order/${o.id}/action">
+                            <input type="hidden" name="action" value="reject">
+                            <button type="submit" class="btn-reject-big">❌ Reject</button>
+                        </form>
+                    </div>
+                </div>
+            `).join('');
+        });
+}
+
+// Auto-poll every 15 seconds for new orders
+setInterval(() => {
+    fetch('{{ url_for("shop.new_orders_count") }}')
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('notifCount');
+            badge.textContent = data.count;
+            badge.classList.toggle('hidden', data.count === 0);
+            badge.classList.toggle('pulse', data.count > 0);
+
+            // If popup is open, refresh it too
+            if (document.getElementById('popupOverlay').classList.contains('open')) {
+                loadNotifications();
+            }
+        });
+}, 15000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Popular Medicines</title>
+
+<style>
+body {
+    font-family: Segoe UI;
+    background: #f5f7fb;
+}
+
+/* TABLE */
+table {
+    width: 80%;
+    margin: 40px auto;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 14px;
+    text-align: center;
+}
+
+th {
+    background: #1e63f3;
+    color: white;
+}
+
+/* ROW HOVER */
+tr:hover {
+    background: #f2f6ff;
+}
+
+/* INPUT */
+input[type="number"] {
+    width: 70px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* BUTTON */
+.btn {
+    padding: 8px 14px;
+    background: #28c76f;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: #1ea75a;
+    transform: scale(1.05);
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28c76f;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: 0.4s;
+}
+.toast.show {
+    opacity: 1;
+}
+</style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Popular Medicines</h2>
+
+<table>
+<tr>
+    <th>Medicine</th>
+    <th>Price (₹)</th>
+    <th>Quantity</th>
+    <th>Action</th>
+</tr>
+
+{% for med in medicines %}
+<tr>
+    <td>{{ med.name }}</td>
+    <td>{{ med.price }}</td>
+
+    <td>
+        <input type="number" id="qty_{{ med.id }}" value="1" min="1">
+    </td>
+
+    <td>
+        <button class="btn" onclick="addToCart({{ med.id }})">
+            Add to Cart 🛒
+        </button>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+function addToCart(id) {
+    let qty = document.getElementById("qty_" + id).value;
+
+    fetch('/add_to_cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            medicine_id: id,
+            quantity: parseInt(qty)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        showToast("✅ Added to cart!");
+    });
+}
+
+function showToast(message) {
+    let toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
+}
+</script>
+
+</body>
+</html>

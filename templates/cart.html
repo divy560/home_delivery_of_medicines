@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Cart</title>
+
+<style>
+body {
+    font-family: Segoe UI;
+    background: linear-gradient(135deg,#eef4ff,#ffffff);
+    margin: 0;
+}
+
+/* CONTAINER */
+.container {
+    width: 80%;
+    margin: 40px auto;
+}
+
+/* TITLE */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* CARD */
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* LEFT */
+.left h3 {
+    margin: 0;
+}
+
+.price {
+    color: #1e63f3;
+    font-weight: bold;
+}
+
+/* QTY */
+.qty-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qty-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+}
+
+.plus { background: #28c76f; }
+.minus { background: #ff9f43; }
+
+/* REMOVE */
+.remove {
+    background: #ff4d4d;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+/* TOTAL BOX */
+.total-box {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    text-align: center;
+    margin-top: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+/* BUTTONS */
+.checkout {
+    display: inline-block;
+    background: linear-gradient(135deg,#1e63f3,#4facfe);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.checkout:hover {
+    transform: scale(1.05);
+}
+
+.clear {
+    display: inline-block;
+    margin-top: 10px;
+    background: #ff4d4d;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>🛒 My Cart</h2>
+
+{% if cart %}
+    {% for item in cart %}
+        <div class="card">
+
+            <!-- LEFT -->
+            <div class="left">
+                <h3>{{ item.name }}</h3>
+                <p class="price">₹{{ item.price }}</p>
+            </div>
+
+            <!-- QUANTITY -->
+            <div class="qty-box">
+                <a href="/decrease/{{ item.id }}" class="qty-btn minus">-</a>
+                <strong>{{ item.quantity }}</strong>
+                <a href="/increase/{{ item.id }}" class="qty-btn plus">+</a>
+            </div>
+
+            <!-- TOTAL -->
+            <div>
+                <strong>₹{{ item.total }}</strong>
+            </div>
+
+            <!-- REMOVE -->
+            <div>
+                <a href="/remove/{{ item.id }}" class="remove">Remove</a>
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <!-- TOTAL SECTION -->
+    <div class="total-box">
+        <h2>Total Price: ₹{{ total_price }}</h2>
+
+        <!-- ✅ CHECKOUT BUTTON -->
+        <a href="/checkout" class="checkout">Proceed to Checkout 🚀</a>
+
+        <!-- OPTIONAL CLEAR CART -->
+        <br>
+        <a href="/clear_cart" class="clear">Clear Cart</a>
+    </div>
+
+{% else %}
+    <h3 style="text-align:center;">Your cart is empty 😢</h3>
+{% endif %}
+
+</div>
+
+</body>
+</html>

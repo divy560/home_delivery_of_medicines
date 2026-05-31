@@ -1,0 +1,73 @@
+{% extends 'admin/base.html' %}
+{% block title %}Shops{% endblock %}
+{% block page_title %}Registered Shops{% endblock %}
+
+{% block content %}
+<div class="filter-bar">
+    <a href="{{ url_for('admin.shops') }}" class="{% if not status_filter %}active{% endif %}">All ({{ shops|length }})</a>
+    <a href="{{ url_for('admin.shops', status='pending') }}" class="{% if status_filter == 'pending' %}active{% endif %}">Pending Approval</a>
+    <a href="{{ url_for('admin.shops', status='approved') }}" class="{% if status_filter == 'approved' %}active{% endif %}">Approved</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>All Shops</h3>
+        <span style="font-size:13px;color:#888;">{{ shops|length }} shop(s)</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#ID</th>
+                <th>Shop Name</th>
+                <th>Owner</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>License</th>
+                <th>Registered</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for s in shops %}
+            <tr>
+                <td><strong>#{{ s.id }}</strong></td>
+                <td>
+                    <div style="font-weight:600;">{{ s.shop_name }}</div>
+                </td>
+                <td>{{ s.owner_name }}</td>
+                <td style="font-size:12px;">{{ s.email }}</td>
+                <td>{{ s.phone }}</td>
+                <td>{{ s.city or '—' }}</td>
+                <td style="font-size:12px;">{{ s.license_number or '—' }}</td>
+                <td style="font-size:12px;color:#888;">
+                    {{ s.registered_at.strftime('%d %b %Y') if s.registered_at else '—' }}
+                </td>
+                <td>
+                    {% if s.is_approved %}
+                        <span class="badge badge-out">✅ Approved</span>
+                    {% else %}
+                        <span class="badge badge-pending">⏳ Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not s.is_approved %}
+                    <form method="POST" action="{{ url_for('admin.approve_shop', shop_id=s.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-primary btn-sm">Approve</button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('admin.delete_shop', shop_id=s.id) }}" style="display:inline;" onsubmit="return confirm('Delete this shop?')">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="10">
+                <div class="empty"><div class="empty-icon">🏪</div>No shops registered yet.</div>
+            </td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Order Medicine</title>
+
+<style>
+body {
+    font-family: Segoe UI;
+    background: linear-gradient(135deg,#eef4ff,#ffffff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 360px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* IMAGE */
+.card img {
+    width: 90px;
+    margin-bottom: 10px;
+}
+
+/* TEXT */
+h2 {
+    margin-bottom: 5px;
+}
+
+.price {
+    color: #1e63f3;
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* QUANTITY BOX */
+.qty-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.qty-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: #1e63f3;
+    color: white;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.qty-input {
+    width: 60px;
+    text-align: center;
+    margin: 0 10px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* TOTAL */
+.total {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
+
+/* BUTTONS */
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-buy {
+    background: linear-gradient(135deg, #ff5c5c, #ff9966);
+    color: white;
+}
+
+.btn-cart {
+    background: #28c76f;
+    color: white;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* SUCCESS POPUP */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28c76f;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: 0.4s;
+}
+.toast.show {
+    opacity: 1;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png">
+
+<h2>{{ med.name }}</h2>
+<p class="price">₹{{ med.price }}</p>
+
+<!-- QUANTITY -->
+<div class="qty-box">
+    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+    <input type="number" id="qty" class="qty-input" value="1" min="1">
+    <button class="qty-btn" onclick="changeQty(1)">+</button>
+</div>
+
+<!-- TOTAL -->
+<div class="total">
+    Total: ₹<span id="total">{{ med.price }}</span>
+</div>
+
+<!-- BUY -->
+<form method="POST" action="/confirm_order/{{ med.id }}">
+    <input type="hidden" name="quantity" id="formQty" value="1">
+    <button class="btn btn-buy">Buy Now</button>
+</form>
+
+<!-- ADD TO CART -->
+<button class="btn btn-cart" onclick="addToCart({{ med.id }})">
+    Add to Cart 🛒
+</button>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">Added to cart ✅</div>
+
+<script>
+let basePrice = Number("{{ med.price }}");
+let qty = 1;
+
+// UPDATE TOTAL
+function updateTotal() {
+    let total = basePrice * qty;
+
+    // animation effect
+    let totalEl = document.getElementById("total");
+    totalEl.style.transform = "scale(1.2)";
+    totalEl.innerText = total;
+
+    setTimeout(() => {
+        totalEl.style.transform = "scale(1)";
+    }, 200);
+
+    document.getElementById("formQty").value = qty;
+}
+
+// BUTTON +/- CLICK
+function changeQty(change) {
+    qty += change;
+    if (qty < 1) qty = 1;
+
+    document.getElementById("qty").value = qty;
+    updateTotal();
+}
+
+// INPUT CHANGE
+document.getElementById("qty").addEventListener("input", function() {
+    qty = Number(this.value) || 1;
+    updateTotal();
+});
+
+// ADD TO CART
+function addToCart(id) {
+    fetch(`/add_to_cart/${id}`)
+    .then(() => {
+        let toast = document.getElementById("toast");
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 2000);
+    });
+}
+</script>
+
+</body>
+</html>

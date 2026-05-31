@@ -1,0 +1,53 @@
+name,category,price,is_popular
+Paracetamol,Fever,20,True
+Crocin,Fever,25,True
+Dolo 650,Fever,30,True
+Calpol,Fever,28,False
+Metacin,Fever,22,False
+Ibuprofen,Pain,40,True
+Combiflam,Pain,35,True
+Brufen,Pain,45,False
+Volini Gel,Pain,120,False
+Diclofenac,Pain,50,False
+Cetirizine,Cold,15,True
+Vicks Cold Tablet,Cold,50,True
+Sinarest,Cold,60,False
+Benadryl Syrup,Cold,90,False
+Allegra,Cold,110,False
+Azithromycin,Infection,120,True
+Amoxicillin,Infection,80,False
+Ciprofloxacin,Infection,95,False
+Doxycycline,Infection,100,False
+Metronidazole,Infection,70,False
+Pantoprazole,Acidity,55,True
+Rantac,Acidity,30,False
+Gelusil,Acidity,25,False
+Digene,Acidity,35,False
+Omeprazole,Acidity,60,False
+Insulin,Diabetes,500,True
+Metformin,Diabetes,40,True
+Glimepiride,Diabetes,65,False
+Gliclazide,Diabetes,70,False
+Sitagliptin,Diabetes,120,False
+Amlodipine,Heart,90,True
+Atenolol,Heart,80,False
+Losartan,Heart,110,False
+Ramipril,Heart,95,False
+Telmisartan,Heart,130,False
+Betnovate Cream,Skin,75,True
+Clotrimazole Cream,Skin,60,False
+Calamine Lotion,Skin,50,False
+Ketoconazole Cream,Skin,85,False
+Permethrin Cream,Skin,95,False
+ORS Solution,General,20,True
+Zinc Tablets,General,30,False
+Vitamin C Tablets,General,40,True
+Multivitamin Tablets,General,60,True
+Liv 52,General,120,False
+Iron Tablets,General,50,False
+Folic Acid,General,45,False
+Cough Syrup,Cold,85,False
+Ascoril Syrup,Cold,95,False
+Dabur Honitus,Cold,110,False
+Pain Relief Spray,Pain,150,False
+Moov Cream,Pain,130,False

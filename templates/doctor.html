@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Profile</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI;
+    background:#f4f7fb;
+}
+
+.container{
+    width:80%;
+    margin:50px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    display:flex;
+    gap:40px;
+}
+
+.img-box img{
+    width:200px;
+    border-radius:50%;
+}
+
+.details h1{
+    margin:0;
+    color:#1e63f3;
+}
+
+.details p{
+    font-size:18px;
+    color:#555;
+}
+
+.badge{
+    display:inline-block;
+    background:#eef4ff;
+    color:#1e63f3;
+    padding:5px 10px;
+    border-radius:6px;
+    margin:5px 0;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 20px;
+    background:#28c76f;
+    color:white;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#1fa85a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="img-box">
+        <img src="{{ doctor.img }}">
+    </div>
+
+    <div class="details">
+        <h1>{{ doctor.name }}</h1>
+
+        <div class="badge">{{ doctor.special }}</div>
+        <div class="badge">{{ doctor.exp }} experience</div>
+
+        <p>{{ doctor.desc }}</p>
+
+        <a href="#" class="btn">📅 Book Appointment</a>
+    </div>
+
+</div>
+
+</body>
+</html>

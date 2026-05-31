@@ -1,0 +1,12 @@
+<h2>{{ category }} Medicines</h2>
+
+<div class="medicine-grid">
+    {% for med in medicines %}
+    <div class="card">
+        <h3>{{ med.name }}</h3>
+        <p>₹{{ med.price }}</p>
+
+        <a href="/add_to_cart/{{ med.id }}" class="btn-cart">Add to Cart</a>
+    </div>
+    {% endfor %}
+</div>

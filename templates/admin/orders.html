@@ -1,0 +1,79 @@
+{% extends 'admin/base.html' %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}All Orders{% endblock %}
+
+{% block content %}
+<div class="filter-bar">
+    <a href="{{ url_for('admin.orders') }}" class="{% if not status_filter %}active{% endif %}">All</a>
+    <a href="{{ url_for('admin.orders', status='Pending') }}" class="{% if status_filter == 'Pending' %}active{% endif %}">Pending</a>
+    <a href="{{ url_for('admin.orders', status='Confirmed') }}" class="{% if status_filter == 'Confirmed' %}active{% endif %}">Confirmed</a>
+    <a href="{{ url_for('admin.orders', status='Out for Delivery') }}" class="{% if status_filter == 'Out for Delivery' %}active{% endif %}">Out for Delivery</a>
+    <a href="{{ url_for('admin.orders', status='Delivered') }}" class="{% if status_filter == 'Delivered' %}active{% endif %}">Delivered</a>
+    <a href="{{ url_for('admin.orders', status='Cancelled') }}" class="{% if status_filter == 'Cancelled' %}active{% endif %}">Cancelled</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Orders {% if status_filter %}— {{ status_filter }}{% endif %}</h3>
+        <span style="font-size:13px;color:#888;">{{ orders|length }} order(s)</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#ID</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Items</th>
+                <th>Payment</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Update Status</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in orders %}
+        {% set o = row.order %}
+            <tr>
+                <td><strong>#{{ o.id }}</strong></td>
+                <td>{{ o.name or 'N/A' }}</td>
+                <td>{{ o.phone or '—' }}</td>
+                <td style="max-width:160px;font-size:12px;color:#555;">{{ o.address }}, {{ o.city }} {{ o.pincode }}</td>
+                <td style="font-size:12px;">
+                    {% for item in row.items %}
+                        <div>{{ item.name }} × {{ item.quantity }}</div>
+                    {% endfor %}
+                </td>
+                <td>{{ o.payment or '—' }}</td>
+                <td><strong>₹{{ "%.0f"|format(o.total_price or 0) }}</strong></td>
+                <td>
+                    <span class="badge
+                        {% if o.status == 'Pending' %}badge-pending
+                        {% elif o.status == 'Confirmed' %}badge-confirmed
+                        {% elif o.status == 'Out for Delivery' %}badge-out
+                        {% elif o.status == 'Delivered' %}badge-delivered
+                        {% elif o.status == 'Cancelled' %}badge-cancelled
+                        {% endif %}">{{ o.status }}</span>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('admin.update_status', order_id=o.id) }}" style="display:flex;gap:6px;">
+                        <select name="status" style="font-size:12px;padding:5px 8px;">
+                            <option {% if o.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option {% if o.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                            <option {% if o.status == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+                            <option {% if o.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            <option {% if o.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    </form>
+                </td>
+                <td><a href="{{ url_for('admin.order_detail', order_id=o.id) }}" class="btn btn-outline btn-sm">View</a></td>
+            </tr>
+        {% else %}
+            <tr><td colspan="10"><div class="empty"><div class="empty-icon">📭</div>No orders found.</div></td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

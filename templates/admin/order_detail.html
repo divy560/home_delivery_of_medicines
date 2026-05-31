@@ -1,0 +1,90 @@
+{% extends 'admin/base.html' %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block page_title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.orders') }}" class="btn btn-outline btn-sm" style="margin-bottom:20px;display:inline-block;">← Back to Orders</a>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+    <div class="card">
+        <div class="card-header"><h3>Customer Info</h3></div>
+        <div style="padding:20px;font-size:14px;line-height:2;">
+            <div><strong>Name:</strong> {{ order.name or '—' }}</div>
+            <div><strong>Phone:</strong> {{ order.phone or '—' }}</div>
+            <div><strong>Address:</strong> {{ order.address or '—' }}</div>
+            <div><strong>City:</strong> {{ order.city or '—' }}</div>
+            <div><strong>Pincode:</strong> {{ order.pincode or '—' }}</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Order Info</h3></div>
+        <div style="padding:20px;font-size:14px;line-height:2;">
+            <div><strong>Order ID:</strong> #{{ order.id }}</div>
+            <div><strong>Payment:</strong> {{ order.payment or '—' }}</div>
+            <div><strong>Total:</strong> <span style="color:#2e7d32;font-weight:700;">₹{{ "%.0f"|format(order.total_price or 0) }}</span></div>
+            <div><strong>Status:</strong>
+                <span class="badge
+                    {% if order.status == 'Pending' %}badge-pending
+                    {% elif order.status == 'Confirmed' %}badge-confirmed
+                    {% elif order.status == 'Out for Delivery' %}badge-out
+                    {% elif order.status == 'Delivered' %}badge-delivered
+                    {% elif order.status == 'Cancelled' %}badge-cancelled
+                    {% endif %}">{{ order.status }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Medicines Ordered</h3></div>
+        <table>
+            <thead>
+                <tr><th>Medicine</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ "%.0f"|format(item.price * item.quantity) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="empty">No items found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Update Status</h3></div>
+        <div style="padding:20px;">
+            <form method="POST" action="{{ url_for('admin.update_status', order_id=order.id) }}">
+                <div class="form-group">
+                    <label>Change order status</label>
+                    <select name="status">
+                        <option {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option {% if order.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option {% if order.status == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+                        <option {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                        <option {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+            </form>
+        </div>
+
+        {% if order.suggestion %}
+        <div style="padding:0 20px 20px;">
+            <div class="form-group">
+                <label>Customer Suggestion</label>
+                <div style="background:#f9f9f9;border:1px solid #eee;border-radius:8px;padding:12px;font-size:13px;color:#555;">
+                    {{ order.suggestion }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

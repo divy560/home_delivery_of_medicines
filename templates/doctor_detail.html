@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Profile</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-container {
+            width: 60%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+        }
+
+        .profile-header img {
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            margin-bottom: 5px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: #1a73e8;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .back-btn:hover {
+            background: #1257b3;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+
+    <div class="profile-header">
+        <img src="{{ doctor.image }}" width="140" height="140">
+        <h2>{{ doctor.name }}</h2>
+        <h4>{{ doctor.specialization }}</h4>
+    </div>
+
+    <hr>
+
+    <p><strong>Experience:</strong> {{ doctor.experience }}</p>
+    <p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+    <p><strong>About:</strong> {{ doctor.description }}</p>
+
+    <a href="/" class="back-btn">⬅ Back to Home</a>
+
+</div>
+
+</body>
+</html>

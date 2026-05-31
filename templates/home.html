@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MediCare</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI,sans-serif;
+    background:#f5f7fb;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+/* NAVBAR */
+.navbar{
+    background:white;
+    padding:15px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:#1e63f3;
+}
+
+.nav-links a{
+    margin:0 12px;
+    text-decoration:none;
+    color:#333;
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:#1e63f3;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+/* LOGIN BUTTON (outline) */
+.btn-outline {
+    border: 1px solid #1e63f3;
+    color: #1e63f3;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: #1e63f3;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(30, 99, 243, 0.2);
+}
+
+/* REGISTER BUTTON */
+.btn-main {
+    background: #1e63f3;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-main:hover {
+    background: #0f4cd1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 99, 243, 0.3);
+}
+
+/* HERO */
+.hero {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #eef4ff 0%, #dbeafe 100%);
+}
+
+.hero-left{
+    max-width:50%;
+}
+
+.hero-left h1{
+    font-size:40px;
+    color:#1b3c74;
+}
+
+.hero-left p{
+    color:#555;
+    margin-bottom:20px;
+}
+
+.search-box{
+    display:flex;
+    position:relative;
+}
+
+.search-box input{
+    padding:12px;
+    width:260px;
+    border:none;
+    border-radius:8px 0 0 8px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.search-box button{
+    padding:12px 18px;
+    background:#28c76f;
+    color:white;
+    border:none;
+    border-radius:0 8px 8px 0;
+}
+
+#suggestions{
+    position:absolute;
+    top:45px;
+    background:white;
+    width:260px;
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    z-index:10;
+}
+
+.suggestion-item{
+    padding:8px;
+    cursor:pointer;
+}
+
+.suggestion-item:hover{
+    background:#f0f0f0;
+}
+
+.hero-right img {
+    width:420px;
+    mix-blend-mode:multiply;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+/* CATEGORY */
+.category{
+    text-align:center;
+    margin:40px 0;
+}
+
+.category a{
+    display:inline-block;
+    margin:8px;
+    padding:10px 18px;
+    background:#1e63f3;
+    color:white;
+    border-radius:20px;
+    text-decoration:none;
+    font-size:14px;
+}
+
+/* SECTION */
+.section{
+    width:90%;
+    margin:40px auto;
+}
+
+.section h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+/* GRID */
+.medicine-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:80px;
+}
+
+.card h3{
+    margin:10px 0;
+    font-size:16px;
+}
+
+.card p{
+    font-weight:bold;
+}
+
+/* BUTTONS */
+.btn-order{
+    background:#1e63f3;
+    padding:8px 12px;
+    color:white;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:13px;
+}
+
+.btn-cart{
+    background:#28c76f;
+    padding:8px 12px;
+    color:white;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:13px;
+    margin-left:5px;
+}
+
+/* BOX */
+.box{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    max-width:500px;
+    margin:20px auto;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.box input, .box textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.box button{
+    margin-top:12px;
+    padding:10px;
+    width:100%;
+    background:#1e63f3;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.nav-links a {
+    margin: 0 12px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    position: relative;
+    padding: 6px 10px;
+    transition: 0.3s;
+}
+
+/* Hover effect */
+.nav-links a:hover {
+    color: #1e63f3;
+    transform: translateY(-2px);
+}
+
+/* Container */
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 10px 0;
+}
+
+/* Base button */
+.btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s ease;
+    display: inline-block;
+    border: 2px solid transparent;
+}
+
+/* Shop register button */
+.shop-btn {
+    background: #4caf50;
+    color: white;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.25);
+}
+
+.shop-btn:hover {
+    background: white;
+    color: #4caf50;
+    border: 2px solid #4caf50;
+    transform: translateY(-2px);
+}
+
+/* Login button */
+.login-btn {
+    background: #2196f3;
+    color: white;
+    box-shadow: 0 4px 10px rgba(33, 150, 243, 0.25);
+}
+
+.login-btn:hover {
+    background: white;
+    color: #2196f3;
+    border: 2px solid #2196f3;
+    transform: translateY(-2px);
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+    .auth-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        text-align: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">MediCare</div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="#services">Services</a>
+        <a href="#doctors">Doctors</a>
+    </div>
+
+    <div class="nav-right">
+        <a href="/cart">🛒</a>
+
+        {% if user %}
+            <span>Hi, {{ user.username }}</span>
+            <a href="/logout" class="btn-outline">Logout</a>
+        {% else %}
+            <a href="/login" class="btn-outline">Login</a>
+            <a href="/register" class="btn-main">Register</a>
+        {% endif %}
+      
+
+    <!-- ✅ ADD THIS -->
+    <div class="auth-buttons">
+    <a href="/shop/register" class="btn shop-btn">🏪 Shop Register</a>
+    <a href="/shop/login" class="btn login-btn">🔐 Shop Login</a>
+</div>
+    
+</div>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-left">
+        <h1>Medicine Delivered 🚀</h1>
+        <p>Fast & reliable delivery at your doorstep</p>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search medicines..." onkeyup="searchMedicine()">
+            <button>Search</button>
+            <div id="suggestions"></div>
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <img src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg">
+    </div>
+</div>
+
+</div>
+
+
+<div id="selectedMed" style="margin:20px;"></div>
+
+<!-- CATEGORY -->
+<div class="category">
+    <h2>Find by Problem</h2>
+    <a href="/category/Fever">🤒 Fever</a>
+    <a href="/category/Cold">🤧 Cold</a>
+    <a href="/category/Pain">💊 Pain</a>
+    <a href="/category/Skin">🧴 Skin</a>
+    <a href="/category/Diabetes">🩸 Diabetes</a>
+</div>
+
+<!-- MEDICINES -->
+<div class="section">
+    <h2>Popular Medicines</h2>
+
+    <div class="medicine-grid">
+        {% for med in medicines %}
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png">
+            <h3>{{ med.name }}</h3>
+            <p>₹{{ med.price }}</p>
+            <a href="/medicine/{{ med.id }}" class="btn-order">Order</a>
+            <a href="/add_to_cart/{{ med.id }}" class="btn-cart">Add to Cart</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- DOCTORS -->
+<div class="section" id="doctors">
+    <h2>Our Doctors 👨‍⚕️</h2>
+
+    <div class="medicine-grid">
+
+        <!-- Doctor 1 -->
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png">
+            <h3>Dr. Aman Verma</h3>
+            <p>Cardiologist</p>
+            <a href="/doctor/1" class="btn-order">View Profile</a>
+        </div>
+
+        <!-- Doctor 2 -->
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png">
+            <h3>Dr. Neha Sharma</h3>
+            <p>Dermatologist</p>
+            <a href="/doctor/2" class="btn-order">View Profile</a>
+        
+        </div>
+
+        <!-- Doctor 3 -->
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png">
+            <h3>Dr. Raj Mehta</h3>
+            <p>General Physician</p>
+      
+        
+        <a href="/doctor/3" class="btn-order">View Profile</a>
+        </div>
+
+    </div>
+</div>
+<div id="doctorModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeDoctor()">&times;</span>
+
+        <h2 id="docName"></h2>
+        <p id="docSpecial"></p>
+        <p id="docDesc"></p>
+    </div>
+</div>
+
+<!-- SUPPORT -->
+<div class="section" id="services">
+    <h2>Contact Support 📞</h2>
+
+    <div class="box">
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Your Email">
+        <textarea rows="4" placeholder="Describe your issue..."></textarea>
+        <button onclick="sendSupport()">Send Request</button>
+    </div>
+</div>
+
+<!-- SUGGESTION -->
+<div class="section">
+    <h2>Suggestion Box 💡</h2>
+
+    <div class="box">
+        <textarea id="suggestionText" rows="4" placeholder="Write your suggestion..."></textarea>
+        <button onclick="submitSuggestion()">Submit</button>
+        <p id="suggestMsg" style="display:none;color:green;">✅ Thanks for your feedback!</p>
+    </div>
+</div>
+
+<!-- JS -->
+
+<script>
+function openDoctor(name, special, desc){
+    document.getElementById("doctorModal").style.display = "flex";
+
+    document.getElementById("docName").innerText = name;
+    document.getElementById("docSpecial").innerText = special;
+    document.getElementById("docDesc").innerText = desc;
+}
+
+function closeDoctor(){
+    document.getElementById("doctorModal").style.display = "none";
+}
+</script>
+
+<script>
+let qty = 1;
+let basePrice = 0;
+
+function searchMedicine() {
+    let query = document.getElementById("searchInput").value;
+
+    if (query.length < 1) {
+        document.getElementById("suggestions").innerHTML = "";
+        return;
+    }
+
+    fetch(`/search?q=${query}`)
+        .then(res => res.json())
+        .then(data => {
+            let suggestions = "";
+
+            data.results.forEach(med => {
+                suggestions += `
+                    <div class="suggestion-item"
+                        onclick="selectMedicine(&quot;${med.name}&quot;, ${med.price}, ${med.id})">
+                        ${med.name} - ₹${med.price}
+                    </div>
+                `;
+            });
+
+            document.getElementById("suggestions").innerHTML = suggestions;
+        });
+}
+
+function selectMedicine(name, price, id) {
+    basePrice = price;
+    qty = 1;
+
+    document.getElementById("searchInput").value = name;
+
+    document.getElementById("selectedMed").innerHTML = `
+        <div style="
+            background:white;
+            padding:20px;
+            border-radius:12px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+            width:300px;
+            margin-top:20px;
+        ">
+            <h3>${name}</h3>
+            <p>Price: ₹${price}</p>
+
+            <div style="margin:10px 0;">
+                <button onclick="changeQty(-1)">➖</button>
+                <span id="qty" style="margin:0 10px;">1</span>
+                <button onclick="changeQty(1)">➕</button>
+            </div>
+
+            <p>Total: ₹<span id="total">${price}</span></p>
+
+            <a href="/add_to_cart/${id}" class="btn-cart">Add to Cart</a>
+            <a href="/medicine/${id}" class="btn-order">Buy Now</a>
+        </div>
+    `;
+
+    document.getElementById("suggestions").innerHTML = "";
+}
+
+function changeQty(change) {
+    qty += change;
+    if (qty < 1) qty = 1;
+
+    document.getElementById("qty").innerText = qty;
+    document.getElementById("total").innerText = qty * basePrice;
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let links = document.querySelectorAll(".nav-links a");
+    let current = window.location.pathname;
+
+    links.forEach(link => {
+        if (link.getAttribute("href") === current) {
+            link.style.borderBottom = "2px solid #1e63f3";
+            link.style.color = "#1e63f3";
+        }
+    });
+});
+</script>
+</body>
+</html>

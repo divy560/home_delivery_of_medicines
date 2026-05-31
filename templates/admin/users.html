@@ -1,0 +1,35 @@
+{% extends 'admin/base.html' %}
+{% block title %}Users{% endblock %}
+{% block page_title %}Registered Users{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Users</h3>
+        <span style="font-size:13px;color:#888;">{{ users|length }} user(s)</span>
+    </div>
+    <table>
+        <thead>
+            <tr><th>#ID</th><th>Username</th><th>Orders Placed</th></tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#e3f2fd;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#1565c0;">
+                            {{ u.username[0].upper() }}
+                        </div>
+                        {{ u.username }}
+                    </div>
+                </td>
+                <td>—</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="3"><div class="empty"><div class="empty-icon">👥</div>No users found.</div></td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
